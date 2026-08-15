@@ -455,6 +455,55 @@
   }
 </style>
 
+
+<script>
+/* GitHub Pages storage compatibility:
+   GitHub Pages is static hosting, so window.storage is not available.
+   This adapter uses the browser's localStorage so student records, payments,
+   receipts and statements can be saved without the "Something went wrong"
+   error. It keeps the same async API expected by the existing website.
+*/
+(function () {
+  if (window.storage) return;
+
+  const PREFIX = 'bizziland_training_centre_';
+
+  function keyName(key) {
+    return PREFIX + String(key);
+  }
+
+  window.storage = {
+    async set(key, value) {
+      localStorage.setItem(keyName(key), String(value));
+      return { key, value: String(value) };
+    },
+
+    async get(key) {
+      const value = localStorage.getItem(keyName(key));
+      if (value === null) return null;
+      return { key, value };
+    },
+
+    async delete(key) {
+      localStorage.removeItem(keyName(key));
+      return true;
+    },
+
+    async list(prefix) {
+      const keys = [];
+      const wanted = String(prefix || '');
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k || !k.startsWith(PREFIX)) continue;
+        const original = k.slice(PREFIX.length);
+        if (original.startsWith(wanted)) keys.push(original);
+      }
+      return { keys };
+    }
+  };
+})();
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
