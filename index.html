@@ -887,16 +887,38 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
     bizzilandPrintStatement(s);
   };
 });
-        box.querySelectorAll('[data-payment]').forEach(b=>b.onclick=async()=>{
-          const s=ss.find(x=>x.id===b.dataset.payment);
-          if(!s)return;
-          const amount=prompt('Enter payment amount (KES):');
-          if(!amount||Number(amount)<=0)return;
-          const p=await window.bizzilandDb.insertPayment(s.id,Number(amount),new Date().toISOString().slice(0,10));
-          bizzilandPrintReceipt(s,p);
-          render();
-        });
-      }
+        box.addEventListener('click', async (e) => {
+  const paymentButton = e.target.closest('[data-payment]');
+
+  if (!paymentButton) return;
+
+  const students = await getStudents();
+
+  const student = students.find(
+    s => String(s.id) === String(paymentButton.dataset.payment)
+  );
+
+  if (!student) {
+    alert('Student record not found.');
+    return;
+  }
+
+  const amount = prompt('Enter payment amount (KES):');
+
+  if (!amount || Number(amount) <= 0) {
+    return;
+  }
+
+  const payment = await window.bizzilandDb.insertPayment(
+    student.id,
+    Number(amount),
+    new Date().toISOString().slice(0, 10)
+  );
+
+  bizzilandPrintReceipt(student, payment);
+
+  render();
+});
       document.getElementById('upgrade-search').addEventListener('input',render);
       document.getElementById('upgrade-refresh').onclick=render;
       document.getElementById('upgrade-export').onclick=async()=>{
