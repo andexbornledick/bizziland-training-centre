@@ -888,6 +888,7 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
   };
 });
         box.addEventListener('click', async (e) => {
+          alert('PAYMENT BUTTON WORKS');
   const paymentButton = e.target.closest('[data-payment]');
 
   if (!paymentButton) return;
