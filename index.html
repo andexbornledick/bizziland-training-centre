@@ -899,7 +899,7 @@ filtered.slice(0,100).map(s=>`<tr>
 
     alert('Student found: ' + s.name);
 
-    bizzilandPrintStatement(s);
+    window.bizzilandPrintStatement(s);
   };
 });
         box.addEventListener('click', async (e) => {
@@ -935,6 +935,7 @@ filtered.slice(0,100).map(s=>`<tr>
 
   render();
 });
+      }
       document.getElementById('upgrade-search').addEventListener('input',render);
       document.getElementById('upgrade-refresh').onclick=render;
       document.getElementById('upgrade-export').onclick = async () => {
@@ -983,6 +984,7 @@ filtered.slice(0,100).map(s=>`<tr>
   a.download = 'bizziland-students.csv';
   a.click();
 };
+    });
     observer.observe(root,{childList:true,subtree:true});
   };
   window.bizzilandUpgrade();
@@ -996,6 +998,113 @@ const { useState, useEffect } = React;
 const ADMIN_CODE = '20262026';
 const STAFF_CODE = '2026';
 const MODULE_OPTIONS = ['Module I', 'Module I & II', 'EXCEL'];
+
+/* Reliable student statement printing.
+   This lives in the main React script so the Statement button still works
+   even if the optional management-tools script has a problem. */
+function printStudentStatement(student) {
+  const s = student || {};
+  const payments = Array.isArray(s.payments) ? s.payments : [];
+  const totalPaid = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  const totalFee = Number(s.fee) || 0;
+  const bal = totalFee - totalPaid;
+  const statusText = bal <= 0 ? 'CLEARED' : 'BALANCE DUE';
+
+  const moneyPrint = value =>
+    'KES ' + (Number(value) || 0).toLocaleString('en-KE');
+
+  const history = payments.length
+    ? payments.map((p, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${p.date || ''}</td>
+          <td>${moneyPrint(p.amount)}</td>
+          <td>${p.description || 'Fee payment'}</td>
+        </tr>
+      `).join('')
+    : `
+        <tr>
+          <td colspan="4" style="text-align:center">No payments recorded</td>
+        </tr>
+      `;
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('The print window was blocked. Please allow pop-ups for this site and click Statement again.');
+    return;
+  }
+
+  printWindow.document.open();
+  printWindow.document.write(`<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Student Fee Statement - ${String(s.name || 'Student').replace(/</g, '&lt;')}</title>
+  <style>
+    body { font-family: Arial, sans-serif; color:#111; padding:32px; max-width:900px; margin:0 auto; }
+    h1,h2 { margin:0 0 8px; }
+    .school { text-align:center; border-bottom:2px solid #222; padding-bottom:14px; margin-bottom:20px; }
+    .details { display:grid; grid-template-columns:1fr 1fr; gap:8px 24px; margin:18px 0; }
+    .label { font-weight:700; }
+    table { width:100%; border-collapse:collapse; margin-top:22px; }
+    th,td { border:1px solid #333; padding:8px; text-align:left; }
+    th { background:#f1f1f1; }
+    .totals { margin-top:22px; }
+    .totals p { margin:7px 0; font-size:16px; }
+    .status { font-weight:700; margin-top:14px; }
+    .signature { margin-top:60px; display:flex; justify-content:space-between; }
+    @media print {
+      body { padding:10mm; }
+      .no-print { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="school">
+    <h1>Bizziland Training Centre</h1>
+    <h2>STUDENT FEE STATEMENT</h2>
+  </div>
+
+  <div class="details">
+    <div><span class="label">Student ID:</span> ${s.id || ''}</div>
+    <div><span class="label">Serial No:</span> ${s.serial || ''}</div>
+    <div><span class="label">Name:</span> ${s.name || ''}</div>
+    <div><span class="label">Phone:</span> ${s.phone || ''}</div>
+    <div><span class="label">Gender:</span> ${s.gender || ''}</div>
+    <div><span class="label">Module:</span> ${s.module || ''}</div>
+    <div><span class="label">Station:</span> ${s.station || ''}</div>
+    <div><span class="label">Admission Date:</span> ${s.admissionDate || ''}</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Date</th><th>Amount</th><th>Description</th></tr>
+    </thead>
+    <tbody>${history}</tbody>
+  </table>
+
+  <div class="totals">
+    <p><b>Total Fee:</b> ${moneyPrint(totalFee)}</p>
+    <p><b>Total Paid:</b> ${moneyPrint(totalPaid)}</p>
+    <p><b>Balance:</b> ${moneyPrint(bal)}</p>
+    <p class="status"><b>Status:</b> ${statusText}</p>
+  </div>
+
+  <div class="signature">
+    <span>Authorized by: __________________</span>
+    <span>Date: __________________</span>
+  </div>
+
+  <button class="no-print" style="margin-top:30px;padding:10px 18px" onclick="window.print()">Print</button>
+</body>
+</html>`);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => printWindow.print(), 400);
+}
+
+window.bizzilandPrintStatement = printStudentStatement;
+
 
 function Seal() {
   return (
@@ -1404,7 +1513,7 @@ function App() {
   </button>
 )}
 
-<button className="mini-btn" onClick={() => bizzilandPrintStatement(s)}>
+<button className="mini-btn" onClick={() => window.bizzilandPrintStatement(s)}>
   Statement
 </button>
                           </div>
