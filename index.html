@@ -935,16 +935,52 @@ filtered.slice(0,100).map(s=>`<tr>
 });
       document.getElementById('upgrade-search').addEventListener('input',render);
       document.getElementById('upgrade-refresh').onclick=render;
-      document.getElementById('upgrade-export').onclick=async()=>{
-        const ss=await getStudents();
-        const rows=[['Student ID','Serial','Name','Gender','Phone','Module','Station','Admission Date','Fee','Paid','Balance','Status']];
-        ss.forEach(s=>rows.push([s.id,s.serial,s.name,s.gender,s.phone,s.module,s.station,s.admissionDate,s.fee,paid(s),balance(s),status(s)]));
-        const csv=rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\\n');
-        const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='bizziland-students.csv';a.click();
-      };
-      render();
-      observer.disconnect();
-    });
+      document.getElementById('upgrade-export').onclick = async () => {
+  const ss = await getStudents();
+
+  const rows = [[
+    'Student ID',
+    'Serial',
+    'Name',
+    'Gender',
+    'Phone',
+    'Module',
+    'Station',
+    'Admission Date',
+    'Fee',
+    'Paid',
+    'Balance',
+    'Status'
+  ]];
+
+  ss.forEach(s => rows.push([
+    s.id,
+    s.serial,
+    s.name,
+    s.gender,
+    s.phone,
+    s.module,
+    s.station,
+    s.admissionDate,
+    s.fee,
+    paid(s),
+    balance(s),
+    status(s)
+  ]));
+
+  const csv = rows
+    .map(r =>
+      r.map(v => '"' + String(v ?? '').replaceAll('"', '""') + '"').join(',')
+    )
+    .join('\n');
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(
+    new Blob([csv], { type: 'text/csv' })
+  );
+  a.download = 'bizziland-students.csv';
+  a.click();
+};
     observer.observe(root,{childList:true,subtree:true});
   };
   window.bizzilandUpgrade();
