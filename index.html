@@ -872,7 +872,7 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
         const filtered=ss.filter(s=>!q||[s.id,s.serial,s.name,s.phone,s.module,s.station].join(' ').toLowerCase().includes(q));
         const box=document.getElementById('upgrade-results');
         if(!filtered.length){box.innerHTML='<div class="empty-state">No matching students found.</div>';return}
-        box.innerHTML=`<table><thead><tr><th>Student</th><th>Module</th><th>Fee</th><th>Paid</th><th>Balance</th><th>Actions</th></tr></thead><tbody>`+
+        box.innerHTML=`<table><thead><tr><th>Student</th><th>Module</th><th>Fee</th><th>Paid</th><th>Balance</th><th>Actions</th></tr></thead><tbody>` +
 filtered.slice(0,100).map(s=>`<tr>
 <td><b>${s.name}</b><br><span style="font-size:11px">${s.id} · ${s.serial||''}</span></td>
 <td>${s.module||''}</td><td class="money-cell">${money(s.fee)}</td>
