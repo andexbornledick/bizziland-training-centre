@@ -856,16 +856,16 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
         const box=document.getElementById('upgrade-results');
         if(!filtered.length){box.innerHTML='<div class="empty-state">No matching students found.</div>';return}
         box.innerHTML=`<table><thead><tr><th>Student</th><th>Module</th><th>Fee</th><th>Paid</th><th>Balance</th><th>Actions</th></tr></thead><tbody>`+
-          filtered.slice(0,100).map(s=>`<tr>
-            <td><b>${s.name}</b><br><span style="font-size:11px">${s.id} · ${s.serial||''}</span></td>
-            <td>${s.module||''}</td><td class="money-cell">${money(s.fee)}</td>
-            <td class="money-cell">${money(paid(s))}</td>
-            <td><span class="upgrade-badge ${balance(s)>0?'owing':''}">${balance(s)<=0?'CLEARED':money(balance(s))}</span></td>
-            <td><div class="row-actions">
-              <button class="mini-btn" data-statement="${s.id}">Statement</button>
-              <button class="mini-btn" data-payment="${s.id}">Payment</button>
-            </div></td>
-          </tr>`).join('')+'</tbody></table>';
+filtered.slice(0,100).map(s=>`<tr>
+<td><b>${s.name}</b><br><span style="font-size:11px">${s.id} · ${s.serial||''}</span></td>
+<td>${s.module||''}</td><td class="money-cell">${money(s.fee)}</td>
+<td class="money-cell">${money(paid(s))}</td>
+<td><span class="upgrade-badge ${balance(s)>0?'owing':''}">${balance(s)<=0?'CLEARED':money(balance(s))}</span></td>
+<td><div class="row-actions">
+<button class="mini-btn" data-statement="${s.id}">Statement</button>
+<button class="mini-btn" data-payment="${s.id}">Payment</button>
+</div></td>
+</tr>`).join('')+`</tbody></table>`;
 
         box.querySelectorAll('[data-statement]').forEach(b => {
   b.onclick = () => {
