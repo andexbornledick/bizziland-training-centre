@@ -788,34 +788,36 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
 }
 
   window.bizzilandPrintReceipt=function(s,p){
-    const bal=balance({...s,payments:[...(s.payments||[]),p]});
-    printDocument('Receipt',`
-      <h2>OFFICIAL FEE PAYMENT RECEIPT</h2>
-      <p><b>Student ID:</b> ${s.id}</p>
-      <p><b>Serial No:</b> ${s.serial||''}</p>
-      <p><b>Student Name:</b> ${s.name}</p>
-      <p><b>Module:</b> ${s.module||''}</p>
-      <p><b>Payment Date:</b> ${p.date||''}</p>
-      <h3>Amount Paid: ${money(p.amount)}</h3>
-      <p><b>Total Fee:</b> ${money(s.fee)}</p>
-      <p><b>Total Paid:</b> ${money(paid({...s,payments:[...(s.payments||[]),p]}))}</p>
-      <p><b>Balance:</b> ${money(bal)}</p>
-      <p style="margin-top:50px">Authorized by: __________________________</p>
-    `);
-  };
+  const bal=balance({...s,payments:[...(s.payments||[]),p]});
 
-  window.bizzilandPrintStatement=function(s){
-  const history=(s.payments||[]).map((p,i)=>
-    `<tr>
+  printDocument('Receipt',`
+    <h2>OFFICIAL FEE PAYMENT RECEIPT</h2>
+    <p><b>Student ID:</b> ${s.id}</p>
+    <p><b>Serial No:</b> ${s.serial||''}</p>
+    <p><b>Student Name:</b> ${s.name||''}</p>
+    <p><b>Module:</b> ${s.module||''}</p>
+    <p><b>Payment Date:</b> ${p.date||''}</p>
+    <p><b>Amount Paid:</b> ${money(p.amount)}</p>
+    <p><b>Total Fee:</b> ${money(s.fee)}</p>
+    <p><b>Total Paid:</b> ${money(paid({...s,payments:[...(s.payments||[]),p]}))}</p>
+    <p><b>Balance:</b> ${money(bal)}</p>
+    <p style="margin-top:50px">Authorized by: __________________</p>
+  `);
+};
+
+window.bizzilandPrintStatement=function(s){
+  const history=(s.payments||[]).map((p,i)=>`
+    <tr>
       <td>${i+1}</td>
       <td>${p.date||''}</td>
       <td>${money(p.amount)}</td>
       <td>${p.description||'Fee payment'}</td>
-    </tr>`
-  ).join('');
+    </tr>
+  `).join('');
 
   printDocument('Statement',`
     <h2>STUDENT FEE STATEMENT</h2>
+
     <p><b>Student ID:</b> ${s.id}</p>
     <p><b>Serial No:</b> ${s.serial||''}</p>
     <p><b>Name:</b> ${s.name||''}</p>
