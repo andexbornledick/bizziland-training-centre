@@ -1334,10 +1334,19 @@ function App() {
                         </td>
                         <td>
                           <div className="row-actions">
-                            <button className="mini-btn" onClick={() => { setPayOpenId(isPayOpen ? null : s.id); setPayAmount(''); setPayDate(''); }}>
-                              {isPayOpen ? 'Cancel' : 'Add Payment'}
-                            </button>
-                            <button className="mini-btn danger" onClick={() => handleDelete(s.id)}>Remove</button>
+                           <button className="mini-btn" onClick={() => { setPayOpenId(isPayOpen ? null : s.id); }}>
+  {isPayOpen ? 'Cancel' : 'Add Payment'}
+</button>
+
+{role === 'admin' && (
+  <button className="mini-btn danger" onClick={() => handleDelete(s.id)}>
+    Remove
+  </button>
+)}
+
+<button className="mini-btn" onClick={() => bizzilandPrintStatement(s)}>
+  Statement
+</button>
                           </div>
                         </td>
                       </tr>
