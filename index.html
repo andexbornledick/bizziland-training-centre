@@ -725,7 +725,7 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
   }
 
   function printDocument(title, body) {
-  const printWindow = window.open('', '_blank', 'width=900,height=700');
+  const printWindow = window.open('', '_blank');
 
   if (!printWindow) {
     alert('Please allow pop-ups for this website so the statement can be printed.');
@@ -762,21 +762,18 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
           text-align: left;
         }
 
+        th {
+          font-weight: bold;
+        }
+
         @media print {
           body {
-            padding: 15px;
+            padding: 10px;
           }
         }
       </style>
     </head>
-
     <body>
-      <h1>BIZZILAND TRAINING CENTRE</h1>
-      <p style="text-align:center;">Student & Fee Registry</p>
-      <hr>
-
-      <h2>${title}</h2>
-
       ${body}
     </body>
     </html>
@@ -784,9 +781,8 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
 
   printWindow.document.close();
 
-  printWindow.focus();
-
   setTimeout(() => {
+    printWindow.focus();
     printWindow.print();
   }, 500);
 }
