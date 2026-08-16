@@ -805,24 +805,41 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
   };
 
   window.bizzilandPrintStatement=function(s){
-    const history=(s.payments||[]).map((p,i)=>`<tr><td>${i+1}</td><td>${p.date||''}</td><td>${money(p.amount)}</td><td>${p.description||'Fee payment'}</td></tr>`).join('');
-    printDocument('Statement',`
-      <h2>STUDENT FEE STATEMENT</h2>
-      <p><b>Student ID:</b> ${s.id}</p>
-      <p><b>Serial No:</b> ${s.serial||''}</p>
-      <p><b>Name:</b> ${s.name}</p>
-      <p><b>Phone:</b> ${s.phone||''}</p>
-      <p><b>Gender:</b> ${s.gender||''}</p>
-      <p><b>Module:</b> ${s.module||''}</p>
-      <p><b>Station:</b> ${s.station||''}</p>
-      <table style="width:100%;border-collapse:collapse;margin-top:20px">
-       <tr><th style="border-bottom:1px solid #333;text-align:left;padding:8px">#</th><th style="border-bottom:1px solid #333;text-align:left;padding:8px">Date</th><th style="border-bottom:1px solid #333;text-align:left;padding:8px">Amount</th><th style="border-bottom:1px solid #333;text-align:left;padding:8px">Description</th></tr>
-       ${history}
-      </table>
-      <h3>Total Fee: ${money(s.fee)}</h3><h3>Total Paid: ${money(paid(s))}</h3><h3>Balance: ${money(balance(s))}</h3>
-      <p><b>Status:</b> ${status(s)}</p>
-    `);
-  };
+  const history=(s.payments||[]).map((p,i)=>
+    `<tr>
+      <td>${i+1}</td>
+      <td>${p.date||''}</td>
+      <td>${money(p.amount)}</td>
+      <td>${p.description||'Fee payment'}</td>
+    </tr>`
+  ).join('');
+
+  printDocument('Statement',`
+    <h2>STUDENT FEE STATEMENT</h2>
+    <p><b>Student ID:</b> ${s.id}</p>
+    <p><b>Serial No:</b> ${s.serial||''}</p>
+    <p><b>Name:</b> ${s.name||''}</p>
+    <p><b>Phone:</b> ${s.phone||''}</p>
+    <p><b>Gender:</b> ${s.gender||''}</p>
+    <p><b>Module:</b> ${s.module||''}</p>
+    <p><b>Station:</b> ${s.station||''}</p>
+
+    <table style="width:100%;border-collapse:collapse;margin-top:20px">
+      <tr>
+        <th style="border-bottom:1px solid #333;text-align:left;padding:8px">#</th>
+        <th style="border-bottom:1px solid #333;text-align:left;padding:8px">Date</th>
+        <th style="border-bottom:1px solid #333;text-align:left;padding:8px">Amount</th>
+        <th style="border-bottom:1px solid #333;text-align:left;padding:8px">Description</th>
+      </tr>
+      ${history}
+    </table>
+
+    <h3>Total Fee: ${money(s.fee)}</h3>
+    <h3>Total Paid: ${money(paid(s))}</h3>
+    <h3>Balance: ${money(balance(s))}</h3>
+    <p><b>Status:</b> ${status(s)}</p>
+  `);
+};
 
   window.bizzilandUpgrade=function(){
     // Avoid installing twice.
