@@ -871,9 +871,21 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
             </div></td>
           </tr>`).join('')+'</tbody></table>';
 
-        box.querySelectorAll('[data-statement]').forEach(b=>b.onclick=()=>{
-  const s=filtered.find(x=>x.id===b.dataset.statement);
-  if(s) bizzilandPrintStatement(s);
+        box.querySelectorAll('[data-statement]').forEach(b => {
+  b.onclick = () => {
+    alert('STATEMENT BUTTON WORKS');
+
+    const s = filtered.find(x => x.id == b.dataset.statement);
+
+    if (!s) {
+      alert('Student record not found');
+      return;
+    }
+
+    alert('Student found: ' + s.name);
+
+    bizzilandPrintStatement(s);
+  };
 });
         box.querySelectorAll('[data-payment]').forEach(b=>b.onclick=async()=>{
           const s=ss.find(x=>x.id===b.dataset.payment);
