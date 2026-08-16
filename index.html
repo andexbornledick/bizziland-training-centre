@@ -981,6 +981,7 @@ function App() {
 
   const [view, setView] = useState('gate');
   const [role, setRole] = useState(null); // null | 'admin' | 'staff'
+  const [studentSearch, setStudentSearch] = useState('');
   const [adminInput, setAdminInput] = useState('');
   const [adminError, setAdminError] = useState('');
   const [staffInput, setStaffInput] = useState('');
@@ -1290,7 +1291,15 @@ function App() {
             <span className="count-badge">{students.length} record{students.length === 1 ? '' : 's'}</span>
           </div>
           <p className="card-note">Only visible to admin. Shared data is stored in Supabase and a local copy is kept in this browser.</p>
-
+<div style={{marginBottom:'15px'}}>
+  <input
+    type="text"
+    placeholder="Search student name..."
+    value={studentSearch}
+    onChange={e => setStudentSearch(e.target.value)}
+    style={{width:'100%',maxWidth:'400px',padding:'10px'}}
+  />
+</div>
           {loading ? (
             <div className="empty-state">Loading roster…</div>
           ) : students.length === 0 ? (
@@ -1310,7 +1319,7 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {students.map(s => {
+               {students.filter(s => (s.name || '').toLowerCase().includes(studentSearch.toLowerCase())).map(s => {
                   const paid = totalPaid(s);
                   const balance = (s.fee || 0) - paid;
                   const isPayOpen = payOpenId === s.id;
