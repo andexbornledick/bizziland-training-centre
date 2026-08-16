@@ -724,18 +724,29 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
     catch(e) { console.error(e); return []; }
   }
 
-  function printDocument(title, body){
-    let old=document.getElementById('bizziland-print-area'); if(old) old.remove();
-    const el=document.createElement('div');
-    el.id='bizziland-print-area';
-    el.innerHTML=`<div style="font-family:Arial,sans-serif;padding:30px;color:#111">
-      <h1 style="text-align:center;margin-bottom:4px">BIZZILAND TRAINING CENTRE</h1>
-      <p style="text-align:center;margin-top:0">Student & Fee Registry</p>
-      <hr>${body}</div>`;
-    document.body.appendChild(el);
+  function printDocument(title, body) {
+  const old = document.getElementById('bizziland-print-area');
+  if (old) old.remove();
+
+  const el = document.createElement('div');
+  el.id = 'bizziland-print-area';
+
+  el.innerHTML = `
+    <div style="font-family:Arial,sans-serif;padding:30px;color:#111">
+      <h1 style="text-align:center">BIZZILAND TRAINING CENTRE</h1>
+      <p style="text-align:center">Student & Fee Registry</p>
+      <hr>
+      <h2 style="text-align:center">${title}</h2>
+      ${body}
+    </div>
+  `;
+
+  document.body.appendChild(el);
+
+  setTimeout(() => {
     window.print();
-    setTimeout(()=>el.remove(),1000);
-  }
+  }, 300);
+}
 
   window.bizzilandPrintReceipt=function(s,p){
     const bal=balance({...s,payments:[...(s.payments||[]),p]});
