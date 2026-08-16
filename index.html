@@ -972,8 +972,10 @@ function App() {
   const [payDate, setPayDate] = useState('');
 
   useEffect(() => {
-    if (role === 'admin') loadStudents();
-  }, [role]);
+  if (role === 'admin' || role === 'staff') {
+    loadStudents();
+  }
+}, [role]);
 
   async function loadStudents() {
     // Show the last local copy immediately after reopening the website.
