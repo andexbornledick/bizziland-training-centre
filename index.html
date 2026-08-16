@@ -725,27 +725,70 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
   }
 
   function printDocument(title, body) {
-  const old = document.getElementById('bizziland-print-area');
-  if (old) old.remove();
+  const printWindow = window.open('', '_blank', 'width=900,height=700');
 
-  const el = document.createElement('div');
-  el.id = 'bizziland-print-area';
+  if (!printWindow) {
+    alert('Please allow pop-ups for this website so the statement can be printed.');
+    return;
+  }
 
-  el.innerHTML = `
-    <div style="font-family:Arial,sans-serif;padding:30px;color:#111">
-      <h1 style="text-align:center">BIZZILAND TRAINING CENTRE</h1>
-      <p style="text-align:center">Student & Fee Registry</p>
+  printWindow.document.open();
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${title}</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 30px;
+          color: #111;
+        }
+
+        h1, h2 {
+          text-align: center;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+
+        th, td {
+          border: 1px solid #333;
+          padding: 8px;
+          text-align: left;
+        }
+
+        @media print {
+          body {
+            padding: 15px;
+          }
+        }
+      </style>
+    </head>
+
+    <body>
+      <h1>BIZZILAND TRAINING CENTRE</h1>
+      <p style="text-align:center;">Student & Fee Registry</p>
       <hr>
-      <h2 style="text-align:center">${title}</h2>
-      ${body}
-    </div>
-  `;
 
-  document.body.appendChild(el);
+      <h2>${title}</h2>
+
+      ${body}
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  printWindow.focus();
 
   setTimeout(() => {
-    window.print();
-  }, 300);
+    printWindow.print();
+  }, 500);
 }
 
   window.bizzilandPrintReceipt=function(s,p){
