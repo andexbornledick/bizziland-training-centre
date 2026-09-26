@@ -797,6 +797,7 @@ window.BIZZILAND_EXCEL_SOURCE = {"FORM ":[[null,null,null,null,null,null,null,nu
     <p><b>Student Name:</b> ${s.name||''}</p>
     <p><b>Module:</b> ${s.module||''}</p>
     <p><b>Payment Date:</b> ${p.date||''}</p>
+    <p><b>Payment Method:</b> M-PESA Paybill 247247 / Account 11211</p>
     <p><b>Amount Paid:</b> ${money(p.amount)}</p>
     <p><b>Total Fee:</b> ${money(s.fee)}</p>
     <p><b>Total Paid:</b> ${money(paid({...s,payments:[...(s.payments||[]),p]}))}</p>
@@ -914,6 +915,7 @@ window.bizzilandPrintStatement=function(s){
         </table>
 
         <div class="statement-summary">
+          <p><b>Payment Method:</b> M-PESA Paybill 247247 / Account 11211</p>
           <p><b>Total Fee:</b> ${moneyPrint(totalFee)}</p>
           <p><b>Total Paid:</b> ${moneyPrint(totalPaid)}</p>
           <p><b>Balance:</b> ${moneyPrint(bal)}</p>
@@ -1522,6 +1524,9 @@ function App() {
                         <tr className="pay-row">
                           <td colSpan="8">
                             <div className="pay-form">
+                              <div style={{width:'100%',padding:'10px 12px',background:'#f4e3c6',border:'1px solid #d9b878',borderRadius:'4px',fontSize:'12px',lineHeight:'1.5'}}>
+                                <strong>Payment Method:</strong> M-PESA Paybill <strong>247247</strong> &nbsp; | &nbsp; Account <strong>11211</strong>
+                              </div>
                               <div>
                                 <label>Amount (KES)</label>
                                 <input type="number" min="0" value={payAmount}
@@ -1554,4 +1559,42 @@ function App() {
 }
 
 ReactDOM.createRoot(document.getElementById('app-root')).render(<App />);
+
+
+</script>
+<script>
+/* Bizziland inactivity timeout — added without changing the existing app logic.
+   Authenticated users are logged out after 5 minutes with no activity.
+*/
+(function () {
+  const INACTIVITY_LIMIT = 5 * 60 * 1000;
+  let inactivityTimer = null;
+
+  function isLoggedIn() {
+    return !!document.querySelector('.role-tag');
+  }
+
+  function logoutForInactivity() {
+    if (!isLoggedIn()) return;
+    const logoutButton = Array.from(document.querySelectorAll('button'))
+      .find(btn => (btn.textContent || '').trim().toLowerCase() === 'log out');
+
+    if (logoutButton) {
+      alert('Your session has ended because there was no activity for 5 minutes. Please log in again.');
+      logoutButton.click();
+    }
+  }
+
+  function resetInactivityTimer() {
+    if (inactivityTimer) clearTimeout(inactivityTimer);
+    if (!isLoggedIn()) return;
+    inactivityTimer = setTimeout(logoutForInactivity, INACTIVITY_LIMIT);
+  }
+
+  ['click', 'keydown', 'mousemove', 'scroll', 'touchstart', 'input'].forEach(function (eventName) {
+    document.addEventListener(eventName, resetInactivityTimer, { passive: true });
+  });
+
+  setInterval(resetInactivityTimer, 1000);
+})();
 </script>
